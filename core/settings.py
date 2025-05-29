@@ -21,6 +21,7 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 DJANGO_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -31,6 +32,7 @@ DJANGO_APPS = [
 
 CUSTOM_APPS = [
     "apps.common",
+    "apps.user",
 ]
 
 THIRD_PARTY_APPS = [
@@ -42,12 +44,12 @@ THIRD_PARTY_APPS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
+        "apps.user.authentication.CustomJWTAuthentication",
     ),
-    "DEFAULT_FILTER_BACKENDS": (
-        "django_filters.rest_framework.DjangoFilterBackend",
+    "DEFAULT_RENDERER_CLASSES": (
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
     ),
-    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
 }
@@ -113,6 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+AUTH_USER_MODEL = 'user.User'
 
 # Internationalization
 LANGUAGE_CODE = "en-us"
@@ -150,15 +153,14 @@ REDIS_HOST = env.str("REDIS_HOST", "localhost")
 REDIS_PORT = env.int("REDIS_PORT", 6379)
 REDIS_DB = env.int("REDIS_DB", 0)
 
-# CELERY CONFIGURATION
-CELERY_BROKER_URL = env.str("CELERY_BROKER_URL", "redis://localhost:6379")
-CELERY_RESULT_BACKEND = env.str("CELERY_BROKER_URL", "redis://localhost:6379")
-
-CELERY_TIMEZONE = "Asia/Tashkent"
-
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
 
 # CYPHER CONFIGURATION
 # AES
 AES_KEY = env.str("AES_KEY", "")
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mr.rahmatilloh@gmail.com'
+EMAIL_HOST_PASSWORD = "ozut adik chsy urkg"
