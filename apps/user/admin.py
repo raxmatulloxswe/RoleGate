@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User, RefreshToken
+from .models import User, RefreshToken, BlackListedToken
 
 # SendOPT your models here.
 @admin.register(User)
@@ -31,3 +31,10 @@ class RefreshTokenAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'used_at')
     list_display_links = ('id', 'user')
     search_fields = ('token', )
+
+
+@admin.register(BlackListedToken)
+class BlackListedTokenAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'token_type', 'created_at')
+    list_display_links = ('id', 'user')
+    search_fields = ('token', 'user__email')

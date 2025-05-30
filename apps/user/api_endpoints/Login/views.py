@@ -6,12 +6,12 @@ from rest_framework.response import Response
 from apps.common.models import AuditLog
 from .serializers import LoginSerializer
 from apps.user.utils import create_jwt
-from ...models import RefreshToken
+from ...models import RefreshToken, User
 
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
-
+    queryset = User.objects.all()
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -27,6 +27,8 @@ class LoginView(generics.GenericAPIView):
             raise ValidationError('Email or Password Not Found')
 
         token = create_jwt(user.id)
+        RefreshToken.objects.filter(user_id=user.id).delete()
+
         RefreshToken.objects.create(
             user=user,
             token=token['refresh']

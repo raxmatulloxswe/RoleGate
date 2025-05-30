@@ -4,6 +4,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
+from apps.common.models import BaseModel
 from apps.user.manager import UserManager
 
 
@@ -74,3 +75,35 @@ class RefreshToken(models.Model):
     class Meta:
         verbose_name = 'Refresh Token'
         verbose_name_plural = 'Refresh Tokens'
+
+
+class BlackListedToken(BaseModel):
+    class TOKEN_TYPE_CHOICES(models.TextChoices):
+        ACCESS = 'access', 'Access'
+        REFRESH = 'refresh', 'Refresh'
+
+    token = models.CharField(
+        max_length=500, unique=True
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='blacklisted_tokens'
+    )
+    token_type = models.CharField(
+        max_length=10,
+        choices=TOKEN_TYPE_CHOICES
+    )
+    action = models.CharField(
+        max_length=255, null=True, blank=True
+    )
+    user_agent = models.TextField(
+        null=True, blank=True
+    )
+
+    def __str__(self):
+        return f"{self.user} - {self.token[:20]}..."
+
+    class Meta:
+        verbose_name = 'Blacklisted Token'
+        verbose_name_plural = 'Blacklisted Tokens'

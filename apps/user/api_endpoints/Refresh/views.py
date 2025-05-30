@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from .serializers import RefreshSerializer
 from apps.user.utils import create_jwt
-from ...models import RefreshToken
+from ...models import RefreshToken, BlackListedToken
 from apps.common.models import AuditLog
 
 
@@ -19,11 +19,23 @@ class RefreshView(generics.GenericAPIView):
         jwt_token= create_jwt(user.id)
 
         old_refresh = serializer.context['token']
-        print("\n[OLD REFRESH]", old_refresh)
-        print("[NEW REFRESH]", jwt_token['refresh'])
-        save = RefreshToken.objects.filter(token=old_refresh).delete()
-        print('\n[DELETE]', save)
-
+        old_access = request.META.get('HTTP_AUTHORIZATION', '').split('Bearer ')[-1]
+        RefreshToken.objects.filter(token=old_refresh).delete()
+        if old_access:
+            BlackListedToken.objects.create(
+                user=user,
+                token=old_access,
+                token_type=BlackListedToken.TOKEN_TYPE_CHOICES.ACCESS,
+                action="/refresh API",
+                user_agent=self.request.META.get('HTTP_USER_AGENT')
+            )
+        BlackListedToken.objects.create(
+            user=user,
+            token=old_refresh,
+            token_type=BlackListedToken.TOKEN_TYPE_CHOICES.REFRESH,
+            action="/refresh API",
+            user_agent=self.request.META.get('HTTP_USER_AGENT')
+        )
         RefreshToken.objects.create(
             user=user,
             token=jwt_token['refresh']
