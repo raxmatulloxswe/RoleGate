@@ -3,6 +3,7 @@ from django.conf import settings
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -19,6 +20,10 @@ class CustomJWTAuthentication(BaseAuthentication):
                 raise AuthenticationFailed('Invalid token prefix')
         except ValueError:
             raise AuthenticationFailed('Invalid Authorization header format')
+
+        token_status = cache.get(token)
+        if token_status != "access_token_valid":
+            raise AuthenticationFailed('Token has been revoked')
 
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])

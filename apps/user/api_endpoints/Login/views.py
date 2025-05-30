@@ -3,8 +3,10 @@ from django.contrib.auth import authenticate
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from apps.common.models import AuditLog
 from .serializers import LoginSerializer
 from apps.user.utils import create_jwt
+from ...models import RefreshToken
 
 
 class LoginView(generics.GenericAPIView):
@@ -25,4 +27,15 @@ class LoginView(generics.GenericAPIView):
             raise ValidationError('Email or Password Not Found')
 
         token = create_jwt(user.id)
+        RefreshToken.objects.create(
+            user=user,
+            token=token['refresh']
+        )
+        AuditLog.objects.create(
+            user=user,
+            action="/login API",
+            token=token['refresh'],
+            ip_address=self.request.META.get('REMOTE_ADDR'),
+            user_agent=self.request.META.get('HTTP_USER_AGENT')
+        )
         return Response({'token': token})

@@ -54,6 +54,17 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
 }
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': 'Format: Bearer <token>',
+        }
+    }
+}
+
 INSTALLED_APPS = DJANGO_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [

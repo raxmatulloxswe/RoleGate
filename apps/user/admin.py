@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User
+from .models import User, RefreshToken
 
 # SendOPT your models here.
 @admin.register(User)
@@ -24,3 +24,10 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('id', 'email',)
+
+
+@admin.register(RefreshToken)
+class RefreshTokenAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'used_at')
+    list_display_links = ('id', 'user')
+    search_fields = ('token', )
