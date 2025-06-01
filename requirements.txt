@@ -1,0 +1,14 @@
+Django==5.2.1
+django_phonenumber_field==8.1.0
+djangorestframework==3.16.0
+drf_yasg==1.21.10
+python_environ==0.4.54
+psycopg2-binary
+django-cors-headers
+django-filter
+django-modeltranslation
+django-redis
+celery==5.3.6
+redis==5.0.1
+phonenumbers==9.0.6
+django-jazzmin==3.0.1
