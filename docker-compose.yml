@@ -1,0 +1,51 @@
+version: "3.7"
+
+services:
+  db:
+    container_name: ${PROJECT_NAME}_db
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    restart: always
+
+  redis:
+    container_name: ${PROJECT_NAME}_redis
+    image: redis:7.2.4-alpine
+    restart: always
+    ports:
+      - 6379:6379
+
+  web: &web
+    container_name: ${PROJECT_NAME}_backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: ./entrypoint.sh
+    volumes:
+      - ./:/app
+      - ./static:/home/app/web/static
+      - ./media:/home/app/web/media
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Tashkent
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - redis
+    restart: always
+    security_opt:
+      - seccomp:unconfined
+
+volumes:
+  postgres_data:
+  static_volume:
