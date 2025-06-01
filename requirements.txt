@@ -12,3 +12,4 @@ celery==5.3.6
 redis==5.0.1
 phonenumbers==9.0.6
 django-jazzmin==3.0.1
+PyJWT==2.10.1
