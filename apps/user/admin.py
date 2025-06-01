@@ -11,7 +11,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('id', 'email',  'phone_number', 'role')
     list_display_links = ('id', 'email')
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'password', 'role')}),
         ('Personal info', {'fields': ('full_name', 'phone_number')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),

@@ -16,8 +16,8 @@ class CompleteRegisterSerializer(serializers.Serializer):
 
         if validated_data['opt_field'] != opt or validated_data['session'] != session:
             raise serializers.ValidationError("Invalid OPT Code or Session")
-
-        User.objects.create_user(email=email, password=password)
+        user = User.objects.create_user(email=email, password=password)
+        validated_data['user'] = user
         cache.delete(f"register_{session}")
 
         return validated_data

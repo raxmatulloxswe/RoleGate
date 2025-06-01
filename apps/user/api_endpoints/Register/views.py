@@ -16,7 +16,7 @@ class CompleteRegisterView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data, context={'session': session})
         serializer.is_valid(raise_exception=True)
         AuditLog.objects.create(
-            user=request.user,
+            user=serializer.validated_data['user'],
             action="/register API",
             ip_address=self.request.META.get('REMOTE_ADDR'),
             user_agent=self.request.META.get('HTTP_USER_AGENT')
