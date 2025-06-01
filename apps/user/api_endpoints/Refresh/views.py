@@ -6,10 +6,12 @@ from .serializers import RefreshSerializer
 from apps.user.utils import create_jwt
 from ...models import RefreshToken, BlackListedToken
 from apps.common.models import AuditLog
+from ...throttle import CustomRateThrottle
 
 
 class RefreshView(generics.GenericAPIView):
     serializer_class = RefreshSerializer
+    throttle_classes = (CustomRateThrottle,)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)

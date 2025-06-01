@@ -4,10 +4,12 @@ from rest_framework import generics
 from rest_framework.response import Response
 
 from .serializers import RegisterSerializer
+from ...throttle import CustomRateThrottle
 
 
 class SendOTPView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
+    throttle_classes = (CustomRateThrottle)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)

@@ -3,10 +3,12 @@ from rest_framework.response import Response
 
 from apps.common.models import AuditLog
 from .serializers import CompleteRegisterSerializer
+from ...throttle import CustomRateThrottle
 
 
 class CompleteRegisterView(generics.GenericAPIView):
     serializer_class = CompleteRegisterSerializer
+    throttle_classes = (CustomRateThrottle,)
 
     def post(self, request):
         session = request.data['session']

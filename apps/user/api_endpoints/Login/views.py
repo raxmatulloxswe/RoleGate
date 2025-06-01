@@ -7,11 +7,13 @@ from apps.common.models import AuditLog
 from .serializers import LoginSerializer
 from apps.user.utils import create_jwt
 from ...models import RefreshToken, User
+from ...throttle import CustomRateThrottle
 
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
     queryset = User.objects.all()
+    throttle_classes = (CustomRateThrottle,)
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
